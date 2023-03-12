@@ -122,15 +122,15 @@ public class SignUpController {
                 HelloController.openAnotherScene("emailCheck.fxml");
             }
 
-            else{
+            else {
                 register_button.getScene().getWindow().hide();
 //                emailCheckController.setLogin(login);
 //                HelloController.openAnotherScene("emailCheck.fxml");
 
                 Session session = HibernateUtil.getSessionFactory().openSession();
 //
-                try(session) {
-                    User user = new User(name,surname,login,password);
+                try (session) {
+                    User user = new User(name, surname, login, password);
                     session.beginTransaction();
                     session.persist(user);
                     session.getTransaction().commit();
@@ -149,8 +149,6 @@ public class SignUpController {
 
                 } catch (IOException e) {
                     throw new RuntimeException(e);
-                } finally {
-                    HibernateUtil.close();
                 }
             }
 
