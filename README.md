@@ -1,4 +1,4 @@
-# FinYsis
+# FinYsis (Financial analYsis)
 
 FinYsis - Desktop application for financial analysis. 
 The application is written in Java (with JavaFX and SceneBuilder) using PostgreSQL DBMS.
