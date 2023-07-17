@@ -23,5 +23,3 @@ Also, the number of your purchases displayed in the application will increase by
 ![success](https://github.com/timzy171/FinYsis/blob/master/images/success.png)
 You can find out the type of purchase you made most often.
 ![showMostType](https://github.com/timzy171/FinYsis/blob/master/images/mosttype.png)
-
-THE APP IS NOT FINISHED AND UNDER DEVELOPMENT.
