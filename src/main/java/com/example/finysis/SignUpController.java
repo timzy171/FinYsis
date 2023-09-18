@@ -19,7 +19,6 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.hibernate.Session;
-import services.EmailSender;
 
 public class SignUpController {
 
@@ -108,7 +107,7 @@ public class SignUpController {
                 message_field.setText("Empty field");
             }
 
-            else if(!SignUpController.validate(login) && !login.isEmpty() && !name.isEmpty() && !surname.isEmpty()){
+            else if(!SignUpController.validate(login)){
                 message_field.setText("Invalid email");
                 System.out.println("yes");
                 login_field.setText("");
@@ -117,46 +116,20 @@ public class SignUpController {
 
             }
 
-            else if((!name.matches("[a-zA-Z]+\\.?") || !surname.matches("[a-zA-Z]+\\.?")) && !name.isEmpty() && !surname.isEmpty() && !password.isEmpty()){
+            else if(!name.matches("[a-zA-Z]+\\.?") || !surname.matches("[a-zA-Z]+\\.?")){
                 back_button.getScene().getWindow().hide();
                 HelloController.openAnotherScene("emailCheck.fxml");
             }
 
             else {
                 register_button.getScene().getWindow().hide();
-//                emailCheckController.setLogin(login);
-//                HelloController.openAnotherScene("emailCheck.fxml");
-
                 Session session = HibernateUtil.getSessionFactory().openSession();
-//
                 try (session) {
-                    User user = new User(name, surname, login, password);
-                    session.beginTransaction();
-                    session.persist(user);
-                    session.getTransaction().commit();
-                    userWindowController.displayLogin(login);
-                    register_button.getScene().getWindow().hide();
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("userWindow.fxml"));
-                    Parent root = loader.load();
-                    userWindowController userWindowController = loader.getController();
-                    userWindowController.displayPurchases(user.getGoodList().size());
-                    userWindowController.displayHelloLabel(user.getName());
-                    Stage stage = new Stage();
-                    Scene scene = new Scene(root);
-                    stage.setResizable(false);
-                    stage.setScene(scene);
-                    stage.show();
-
+                    addNewUser(name,surname,login,password,session);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
-
-
-            System.out.println(name_field.getText());
-            System.out.println(surname_field.getText());
-            System.out.println(login_field.getText());
-            System.out.println(pass_field.getText());
         });
 
         exit_button.setOnAction(actionEvent -> {
@@ -164,4 +137,23 @@ public class SignUpController {
         });
     }
 
+
+    private void addNewUser(String name,String surname,String login,String password,Session session) throws IOException {
+        User user = new User(name, surname, login, password);
+        session.beginTransaction();
+        session.persist(user);
+        session.getTransaction().commit();
+        UserWindowController.displayLogin(login);
+        register_button.getScene().getWindow().hide();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("userWindow.fxml"));
+        Parent root = loader.load();
+        UserWindowController userWindowController = loader.getController();
+        userWindowController.displayPurchases(user.getGoodList().size());
+        userWindowController.displayHelloLabel(user.getName());
+        Stage stage = new Stage();
+        Scene scene = new Scene(root);
+        stage.setResizable(false);
+        stage.setScene(scene);
+        stage.show();
+    }
 }

@@ -10,14 +10,12 @@ import hibernate.HibernateUtil;
 import hibernate.entity.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Border;
 import javafx.stage.Stage;
 import org.hibernate.Session;
 
@@ -75,56 +73,60 @@ public class SignInController{
                     Optional<User> user = list.stream().filter(x -> x.getEmail().equals(login)).filter(x ->
                             x.getPassword().equals(password)).findAny();
                     if(user.isPresent()){
-                        userWindowController.displayLogin(login);
-                        signin_in_signin.getScene().getWindow().hide();
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("userWindow.fxml"));
-                        Parent root = loader.load();
-                        userWindowController userWindowController = loader.getController();
-//                        userWindowController.displayLogin(login);
-                        userWindowController.displayPurchases(user.get().getGoodList().size());
-                        userWindowController.displayHelloLabel(user.get().getName());
-                        Stage stage = new Stage();
-                        Scene scene = new Scene(root);
-                        stage.setResizable(false);
-                        stage.setScene(scene);
-                        stage.show();
+                        setInfoForFoundedUser(login,user);
                     }
                     else{
                         login_field.setText("");
                         pass_field.setText("");
                         notFound.setText("User not found");
-//                        session = HibernateUtil.getSessionFactory().openSession();
                     }
 
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 } finally {
                     session.close();
-//                    HibernateUtil.close();
                 }
             }
             else{
                 if(password.isEmpty()){
-                    login_field.setText("");
-                    login_field.setStyle("-fx-text-box-border: red ;\n" +
-                            "  -fx-focus-color: red ;");
-                    pass_field.setText("");
-                    pass_field.setStyle("-fx-text-box-border: red ;\n" +
-                            "  -fx-focus-color: red ;");
-//                    session = HibernateUtil.getSessionFactory().openSession();
-
+                    setInfoForEmptyPassword();
                 }
                 else{
-                    login_field.setText("");
-                    pass_field.setText("");
-                    login_field.setStyle("-fx-text-box-border: red ;\n" +
-                            "  -fx-focus-color: red ;");
-                    notFound.setText("Invalid email");
-//                    session = HibernateUtil.getSessionFactory().openSession();
+                    setInfoForInvalidEmail();
                 }
             }
         });
-
     }
 
+    private void setInfoForEmptyPassword(){
+        login_field.setText("");
+        login_field.setStyle("-fx-text-box-border: red ;\n" +
+                "  -fx-focus-color: red ;");
+        pass_field.setText("");
+        pass_field.setStyle("-fx-text-box-border: red ;\n" +
+                "  -fx-focus-color: red ;");
+    }
+
+    private void setInfoForInvalidEmail(){
+        login_field.setText("");
+        pass_field.setText("");
+        login_field.setStyle("-fx-text-box-border: red ;\n" +
+                "  -fx-focus-color: red ;");
+        notFound.setText("Invalid email");
+    }
+
+    private void setInfoForFoundedUser(String login,Optional<User> user) throws IOException {
+        UserWindowController.displayLogin(login);
+        signin_in_signin.getScene().getWindow().hide();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("userWindow.fxml"));
+        Parent root = loader.load();
+        UserWindowController userWindowController = loader.getController();
+        userWindowController.displayPurchases(user.get().getGoodList().size());
+        userWindowController.displayHelloLabel(user.get().getName());
+        Stage stage = new Stage();
+        Scene scene = new Scene(root);
+        stage.setResizable(false);
+        stage.setScene(scene);
+        stage.show();
+    }
 }

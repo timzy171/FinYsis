@@ -16,7 +16,7 @@ import javafx.scene.control.TextField;
 import org.hibernate.Session;
 
 
-public class userWindowController implements Initializable {
+public class UserWindowController implements Initializable {
 
     @FXML
     private ResourceBundle resources;
@@ -111,7 +111,7 @@ public class userWindowController implements Initializable {
     }
 
     private void getMostFrequentType(){
-        if(user.getGoodList().size() > 0){
+        if(!user.getGoodList().isEmpty()){
             String result = "";
             int maxCount = 0;
             List<String> typeList = user.getGoodList().stream().map(Good::getType).toList();
